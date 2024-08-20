@@ -21,11 +21,12 @@ USAGE=$(cat << 'EOM'
             -p          Platform pair list (os/architecture) [DEFAULT: linux/amd64]
             -r          IMAGE REPO: set the docker image repo
             -v          VERSION: The application version of the docker image [DEFAULT: output of `make version`]
+            -w          WINDOWS_VERSION: The Windows version for the container
 EOM
 )
 
 # Process our input arguments
-while getopts "p:r:v:" opt; do
+while getopts "p:r:v:w:" opt; do
   case ${opt} in
     p ) # Platform Pairs
         IFS=',' read -ra PLATFORMS <<< "$OPTARG"
@@ -35,6 +36,9 @@ while getopts "p:r:v:" opt; do
       ;;
     v ) # Image Version
         VERSION="$OPTARG"
+      ;;
+    w ) # Windows Version
+        WINDOWS_VERSION="$OPTARG"
       ;;
     \? )
         echo "$USAGE" 1>&2
@@ -51,12 +55,14 @@ for os_arch in "${PLATFORMS[@]}"; do
     img_tag="$IMAGE_REPO:$VERSION-$os-$arch"
 
     dockerfile="$DOCKERFILE_PATH"
-    if [[ $os = "windows" ]]; then
+    if [[ $os = "windows" ]]; then        
+        img_tag="${img_tag}-$WINDOWS_VERSION"
         dockerfile="${dockerfile}.windows"
         docker build \
             --file "${dockerfile}" \
             --build-arg GOOS=${os} \
             --build-arg GOARCH=${arch} \
+            --build-arg WINDOWS_VERSION=${WINDOWS_VERSION} \
             --build-arg GOPROXY=${GOPROXY} \
             --tag ${img_tag} \
             ${REPO_ROOT_PATH}
