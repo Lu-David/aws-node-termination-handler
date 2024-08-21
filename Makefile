@@ -171,7 +171,9 @@ eks-cluster-test:
 
 release: build-binaries build-docker-images push-docker-images generate-k8s-yaml upload-resources-to-github
 
-release-windows: build-binaries-windows-2019 build-binaries-windows-2022 build-docker-images-windows-2019 build-docker-images-windows-2022 push-docker-images-windows
+release-windows-2019: build-binaries-windows-2019 build-docker-images-windows-2019 push-docker-images-windows-2019
+
+release-windows-2022: build-binaries-windows-2022 build-docker-images-windows-2022 push-docker-images-windows-2022
 
 test: spellcheck shellcheck unit-test e2e-test compatibility-test license-test go-linter helm-version-sync-test helm-lint
 
