@@ -180,7 +180,7 @@ jobs:
 
         choco install make && make build-docker-images-windows-2019
 
-    buildWindows2022Docker:
+  buildWindows2022Docker:
     name: Build Windows Docker Images
     runs-on: windows-2022
     steps:
