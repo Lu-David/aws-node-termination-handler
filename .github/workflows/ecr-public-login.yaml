@@ -1,4 +1,4 @@
-name: Dev - ECR Public Login
+name: Dev - Linux ECR Public Login
 
 on:
   workflow_dispatch:
