@@ -4,7 +4,7 @@ LATEST_COMMIT_HASH=$(shell git rev-parse HEAD)
 LATEST_COMMIT_CHART_VERSION=$(shell git --no-pager show ${LATEST_COMMIT_HASH}:config/helm/aws-node-termination-handler/Chart.yaml | grep 'version:' | cut -d' ' -f2 | tr -d '[:space:]')
 PREVIOUS_RELEASE_TAG=$(shell git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1`)
 REPO_FULL_NAME=aws/aws-node-termination-handler
-ECR_REGISTRY ?= 851725162668.dkr.ecr.us-west-2.amazonaws.com # public.ecr.aws/aws-ec2
+ECR_REGISTRY ?= 851725162668.dkr.ecr.us-east-1.amazonaws.com # public.ecr.aws/aws-ec2
 ECR_REPO ?= ${ECR_REGISTRY}/aws-node-termination-handler
 ECR_REPO_CHART ?= aws-node-termination-handler
 IMG ?= amazon/aws-node-termination-handler
