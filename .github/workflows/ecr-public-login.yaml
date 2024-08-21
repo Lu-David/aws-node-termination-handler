@@ -1,4 +1,4 @@
-name: Dev - ECR Login 2019
+name: Dev - ECR Public Login 2019
 
 on:
   workflow_dispatch:
