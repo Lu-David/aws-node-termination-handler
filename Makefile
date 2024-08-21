@@ -126,7 +126,8 @@ build-binaries:
 	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_LINUX} -v ${VERSION}
 
 build-binaries-windows:
-	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION}
+	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -w 1809
+	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -w ltsc2022
 
 upload-resources-to-github:
 	${MAKEFILE_PATH}/scripts/upload-resources-to-github

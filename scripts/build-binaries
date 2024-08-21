@@ -59,9 +59,9 @@ for os_arch in "${PLATFORMS[@]}"; do
     fi
 
     docker container rm $container_name || :
-    $SCRIPTPATH/build-docker-images -p $os_arch -v $VERSION -r $repo_name
 
     if [[ $os == "windows" ]]; then
+      $SCRIPTPATH/build-docker-images -p $os_arch -v $VERSION -r $repo_name -w $WINDOWS_VERSION
       docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch-$WINDOWS_VERSION"
       docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
       ## Create zip archive with binary taking into account windows .exe
@@ -74,6 +74,7 @@ for os_arch in "${PLATFORMS[@]}"; do
       rm -f ${BIN_DIR}/${BASE_BIN_NAME}.exe
     else
       ## Create tar.gz archive with binary
+      $SCRIPTPATH/build-docker-images -p $os_arch -v $VERSION -r $repo_name
       docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch"
       docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
       cp ${BIN_DIR}/${bin_name} ${BIN_DIR}/${BASE_BIN_NAME}
