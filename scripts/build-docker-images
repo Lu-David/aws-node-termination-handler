@@ -58,15 +58,15 @@ for os_arch in "${PLATFORMS[@]}"; do
         )
 
         for win_version in "${win_versions[@]}"; do
-            img_tag="${img_tag}-$win_version"
-            dockerfile="${dockerfile}.windows"
+            img_tag_="${img_tag}-$win_version"
+            dockerfile_="${dockerfile}.windows"
             docker build \
-                --file "${dockerfile}" \
+                --file "${dockerfile_}" \
                 --build-arg GOOS=${os} \
                 --build-arg GOARCH=${arch} \
                 --build-arg WINDOWS_VERSION=${win_version} \
                 --build-arg GOPROXY=${GOPROXY} \
-                --tag ${img_tag} \
+                --tag ${img_tag_} \
                 ${REPO_ROOT_PATH}
         done
     else
