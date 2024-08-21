@@ -21,6 +21,7 @@ USAGE=$(cat << 'EOM'
             -p          Platform pair list (os/architecture) [DEFAULT: linux/amd64]
             -r          IMAGE REPO: set the docker image repo
             -v          VERSION: The application version of the docker image [DEFAULT: output of `make version`]
+            -w          WINDOWS_VERSION: The Windows version for the container
 EOM
 )
 
@@ -35,6 +36,9 @@ while getopts "p:r:v:" opt; do
       ;;
     v ) # Image Version
         VERSION="$OPTARG"
+      ;;
+    w ) # Windows Version
+        WINDOWS_VERSION="$OPTARG"
       ;;
     \? )
         echo "$USAGE" 1>&2
@@ -51,24 +55,17 @@ for os_arch in "${PLATFORMS[@]}"; do
     img_tag="$IMAGE_REPO:$VERSION-$os-$arch"
 
     dockerfile="$DOCKERFILE_PATH"
-    if [[ $os = "windows" ]]; then
-        win_versions=(
-          "1809"
-          "ltsc2022"
-        )
-
-        for win_version in "${win_versions[@]}"; do
-            img_tag="${img_tag}-$win_version"
-            dockerfile="${dockerfile}.windows"
-            docker build \
-                --file "${dockerfile}" \
-                --build-arg GOOS=${os} \
-                --build-arg GOARCH=${arch} \
-                --build-arg WINDOWS_VERSION=${win_version} \
-                --build-arg GOPROXY=${GOPROXY} \
-                --tag ${img_tag} \
-                ${REPO_ROOT_PATH}
-        done
+    if [[ $os = "windows" ]]; then        
+        img_tag="${img_tag}-$WINDOWS_VERSION"
+        dockerfile="${dockerfile}.windows"
+        docker build \
+            --file "${dockerfile}" \
+            --build-arg GOOS=${os} \
+            --build-arg GOARCH=${arch} \
+            --build-arg WINDOWS_VERSION=${WINDOWS_VERSION} \
+            --build-arg GOPROXY=${GOPROXY} \
+            --tag ${img_tag} \
+            ${REPO_ROOT_PATH}
     else
         # Launch a docker buildx instance and save its name so we can terminate it later
         buildx_instance_name=$(docker buildx create --use)
