@@ -6,7 +6,7 @@ on:
 jobs:
   ecrLogin:
     name: Login to ECR
-    runs-on: windows-2019
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/setup-go@v2
       with:
