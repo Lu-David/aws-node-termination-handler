@@ -49,10 +49,10 @@ build-docker-images:
 	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -r ${IMG} -v ${VERSION}
 
 build-docker-images-windows-2019:
-	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${IMG} -v ${VERSION} -w 1809
+	${MAKEFILE_PATH}/scripts/build-docker-images -p "windows-2019/amd64" -r ${IMG} -v ${VERSION} -w 1809
 
 build-docker-images-windows-2022:
-	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${IMG} -v ${VERSION} -w ltsc2022
+	${MAKEFILE_PATH}/scripts/build-docker-images -p "windows-2022/amd64" -r ${IMG} -v ${VERSION} -w ltsc2022
 
 ecr-public-login:
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/ecr-public-login
@@ -60,15 +60,20 @@ ecr-public-login:
 push-docker-images:
 	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/ecr-public-login
-	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -r ${ECR_REPO} -v ${VERSION} -m
+	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -r ${ECR_REPO} -v ${VERSION} -m true
 
 amazon-ecr-credential-helper:
 	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
 
-push-docker-images-windows:
-	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+push-docker-images-windows-2019:
+	${MAKEFILE_PATH}/scripts/retag-docker-images -p "windows-2019/amd64" -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
 	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
-	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${ECR_REPO} -v ${VERSION} -m
+	${MAKEFILE_PATH}/scripts/push-docker-images -p "windows-2019/amd64" -r ${ECR_REPO} -v ${VERSION} -m
+
+push-docker-images-windows-2022:
+	${MAKEFILE_PATH}/scripts/retag-docker-images -p "windows-2022/amd64" -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
+	${MAKEFILE_PATH}/scripts/push-docker-images -p "windows-2022/amd64" -r ${ECR_REPO} -v ${VERSION} -m
 
 push-helm-chart:
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/helm-login
