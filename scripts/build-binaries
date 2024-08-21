@@ -25,7 +25,7 @@ EOM
 )
 
 # Process our input arguments
-while getopts "p:v:b:" opt; do
+while getopts "p:v:b:w:" opt; do
   case ${opt} in
     p ) # Platform Pairs
         IFS=',' read -ra PLATFORMS <<< "$OPTARG"
@@ -35,6 +35,9 @@ while getopts "p:v:b:" opt; do
       ;;
     b ) # Base bin name
         BASE_BIN_NAME="$OPTARG"
+      ;;
+    w ) # Windows Version
+        WINDOWS_VERSION="$OPTARG"
       ;;
     \? )
         echo "$USAGE" 1>&2
@@ -57,20 +60,22 @@ for os_arch in "${PLATFORMS[@]}"; do
 
     docker container rm $container_name || :
     $SCRIPTPATH/build-docker-images -p $os_arch -v $VERSION -r $repo_name
-    docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch"
-    docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
 
     if [[ $os == "windows" ]]; then
+      docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch-$WINDOWS_VERSION"
+      docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
       ## Create zip archive with binary taking into account windows .exe
       cp ${BIN_DIR}/${bin_name} ${BIN_DIR}/${BASE_BIN_NAME}.exe
       ## Can't reuse bin_name below because it includes .exe
       curr_dir=$(pwd)
       cd "${BIN_DIR}"
-      zip -9 -q ${BASE_BIN_NAME}-$os-$arch.zip ${BASE_BIN_NAME}.exe
+      zip -9 -q ${BASE_BIN_NAME}-$os-$arch-$WINDOWS_VERSION.zip ${BASE_BIN_NAME}.exe
       cd "${curr_dir}"
       rm -f ${BIN_DIR}/${BASE_BIN_NAME}.exe
     else
       ## Create tar.gz archive with binary
+      docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch"
+      docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
       cp ${BIN_DIR}/${bin_name} ${BIN_DIR}/${BASE_BIN_NAME}
       tar -zcvf ${BIN_DIR}/${bin_name}.tar.gz -C ${BIN_DIR} ${BASE_BIN_NAME}
       rm -f ${BIN_DIR}/${BASE_BIN_NAME}
