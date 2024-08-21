@@ -125,8 +125,10 @@ helm-validate-chart-versions:
 build-binaries:
 	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_LINUX} -v ${VERSION}
 
-build-binaries-windows:
+build-binaries-windows-2019:
 	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -w 1809
+
+build-binaries-windows-2022:
 	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -w ltsc2022
 
 upload-resources-to-github:
@@ -169,7 +171,7 @@ eks-cluster-test:
 
 release: build-binaries build-docker-images push-docker-images generate-k8s-yaml upload-resources-to-github
 
-release-windows: build-binaries-windows build-docker-images-windows push-docker-images-windows
+release-windows: build-binaries-windows-2019 build-binaries-windows-2022 build-docker-images-windows-2019 build-docker-images-windows-2022 push-docker-images-windows
 
 test: spellcheck shellcheck unit-test e2e-test compatibility-test license-test go-linter helm-version-sync-test helm-lint
 
