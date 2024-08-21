@@ -1,4 +1,4 @@
-name: Dev - ECR Public Login 2019
+name: Dev - ECR Public Login
 
 on:
   workflow_dispatch:
@@ -14,11 +14,7 @@ jobs:
 
     - uses: actions/checkout@v4
 
-    - run: |
-        $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
-        Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-        refreshenv
-        choco install make && choco install zip && make ecr-public-login
+    - run: make ecr-public-login
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
