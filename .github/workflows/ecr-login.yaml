@@ -2,8 +2,10 @@ name: Dev - ECR Login 2019
 
 on:
   push:
-    tags:
-      - dev-ecr-login-*
+    branches:
+      - main
+    tags-ignore:
+      - "v*.*.*"
   workflow_dispatch:
 
 jobs:
