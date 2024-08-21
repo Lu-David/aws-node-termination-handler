@@ -25,7 +25,7 @@ EOM
 )
 
 # Process our input arguments
-while getopts "mp:r:v:" opt; do
+while getopts "p:r:v:m" opt; do
   case ${opt} in
     p ) # Platform Pairs
         IFS=',' read -ra PLATFORMS <<< "$OPTARG"
