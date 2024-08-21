@@ -18,8 +18,6 @@ jobs:
         go-version: ^1.21.5
 
     - uses: actions/checkout@v4
-      with:
-        ref: dev-ecr-login
 
     - run: |
         $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
