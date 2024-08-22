@@ -49,10 +49,10 @@ build-docker-images:
 	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -r ${IMG} -v ${VERSION}
 
 build-docker-images-windows-2019:
-	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${IMG} -v ${VERSION} -w 1809
+	${MAKEFILE_PATH}/scripts/build-docker-images -p "windows-1809/amd64" -r ${IMG} -v ${VERSION}
 
 build-docker-images-windows-2022:
-	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${IMG} -v ${VERSION} -w ltsc2022
+	${MAKEFILE_PATH}/scripts/build-docker-images -p "windows-ltsc2022/amd64" -r ${IMG} -v ${VERSION}
 
 ecr-public-login:
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/ecr-public-login
@@ -66,14 +66,14 @@ amazon-ecr-credential-helper:
 	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
 
 push-docker-images-windows-2019:
-	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+	${MAKEFILE_PATH}/scripts/retag-docker-images -p "windows-1809/amd64" -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
 	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
-	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${ECR_REPO} -v ${VERSION} -m
+	${MAKEFILE_PATH}/scripts/push-docker-images -p "windows-1809/amd64" -r ${ECR_REPO} -v ${VERSION} -m
 
 push-docker-images-windows-2022:
-	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+	${MAKEFILE_PATH}/scripts/retag-docker-images -p "windows-ltsc2022/amd64" -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
 	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
-	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${ECR_REPO} -v ${VERSION} -m
+	${MAKEFILE_PATH}/scripts/push-docker-images -p "windows-ltsc2022/amd64" -r ${ECR_REPO} -v ${VERSION} -m
 
 push-helm-chart:
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/helm-login
@@ -137,10 +137,10 @@ build-binaries:
 	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_LINUX} -v ${VERSION}
 
 build-binaries-windows-2019:
-	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -w 1809
+	${MAKEFILE_PATH}/scripts/build-binaries -p "windows-1809/amd64" -v ${VERSION}
 
 build-binaries-windows-2022:
-	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -w ltsc2022
+	${MAKEFILE_PATH}/scripts/build-binaries -p "windows-ltsc2022/amd64" -v ${VERSION}
 
 upload-resources-to-github:
 	${MAKEFILE_PATH}/scripts/upload-resources-to-github
