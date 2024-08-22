@@ -57,7 +57,7 @@ for os_arch in "${PLATFORMS[@]}"; do
 
     docker container rm $container_name || :
 
-    if [[ $os == "windows*" ]]; then
+    if [[ $os == "windows"* ]]; then
       $SCRIPTPATH/build-docker-images -p $os_arch -v $VERSION -r $repo_name
       docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch"
       docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
