@@ -39,6 +39,7 @@ jobs:
   releaseWindows2019:
     name: Release Windows 2019
     runs-on: windows-2019
+    needs: [releaseLinux]
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
@@ -63,7 +64,7 @@ jobs:
   releaseWindows2022:
     name: Release Windows 2022
     runs-on: windows-2022
-    needs: [releaseWindows2019]
+    needs: [releaseLinux]
     steps:
     - name: Set up Go 1.x
       uses: actions/setup-go@v2
