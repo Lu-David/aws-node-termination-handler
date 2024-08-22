@@ -49,7 +49,7 @@ for os_arch in "${PLATFORMS[@]}"; do
     arch=$(echo $os_arch | cut -d'/' -f2)
 
     dockerfile="$DOCKERFILE_PATH"
-    if [[ $os = "windows*" ]]; then   
+    if [[ $os == "windows"* ]]; then   
         os=$(echo $os | cut -d'-' -f1)
         windows_version=$(echo $os | cut -d'-' -f2)
         img_tag="$IMAGE_REPO:$VERSION-$os-$windows_version-$arch"

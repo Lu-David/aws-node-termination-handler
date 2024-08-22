@@ -49,7 +49,7 @@ for os_arch in "${PLATFORMS[@]}"; do
     container_name="build-$BASE_BIN_NAME-$os-$arch"
     repo_name="bin-build"
 
-    if [[ $os == "windows*" ]]; then
+    if [[ $os == "windows"* ]]; then
         bin_name="$BASE_BIN_NAME-$os-$arch.exe"
     else
         bin_name="$BASE_BIN_NAME-$os-$arch"
