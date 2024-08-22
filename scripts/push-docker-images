@@ -118,6 +118,9 @@ if [[ $MANIFEST == "true" ]]; then
       os_arch=$(echo ${updated_img//$IMAGE_REPO:$VERSION-/})
       os=$(echo $os_arch | cut -d'-' -f1)
       arch=$(echo $os_arch | cut -d'-' -f2)
+      if [[ $os == "windows"* ]]; then  
+        arch=$(echo $os_arch | cut -d'-' -f3)
+      fi
 
       echo "annotating manifest"
       docker manifest annotate $IMAGE_REPO:$VERSION $updated_img --arch $arch --os $os
