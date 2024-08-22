@@ -180,7 +180,7 @@ helm-tests: helm-version-sync-test helm-lint helm-validate-chart-versions
 eks-cluster-test:
 	${MAKEFILE_PATH}/test/eks-cluster-test/run-test
 
-release: build-binaries build-docker-images push-docker-images generate-k8s-yaml upload-resources-to-github
+release: build-binaries build-docker-images push-docker-images
 
 release-windows-2019: build-binaries-windows-2019 build-docker-images-windows-2019 push-docker-images-windows-2019
 
