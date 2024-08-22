@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - windows-2022-dev
     tags-ignore:
       - "v*.*.*"
   pull_request:
@@ -122,8 +123,8 @@ jobs:
     - name: Build Linux Docker Images
       run: make build-docker-images
 
-  buildWindows:
-    name: Build Windows Binaries
+  buildWindows2019:
+    name: Build Windows 2019 Binaries
     runs-on: windows-2019
     steps:
     - name: Set up Go 1.x
@@ -149,10 +150,39 @@ jobs:
         Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
         refreshenv
 
-        choco install make && choco install zip && make build-binaries-windows
+        choco install make && choco install zip && make build-binaries-windows-2019
 
-  buildWindowsDocker:
-    name: Build Windows Docker Images
+  buildWindows2022:
+    name: Build Windows 2022 Binaries
+    runs-on: windows-2022
+    steps:
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ env.DEFAULT_GO_VERSION }}
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Restore go mod cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+          ~/go/bin/
+        key: gocache
+
+    - name: Build Windows Binaries
+      run: |
+        $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
+        Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+        refreshenv
+
+        choco install make && choco install zip && make build-binaries-windows-2022
+
+  buildWindows2019Docker:
+    name: Build Windows 2019 Docker Images
     runs-on: windows-2019
     steps:
     - name: Set up Go 1.x
@@ -178,7 +208,36 @@ jobs:
         Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
         refreshenv
 
-        choco install make && make build-docker-images-windows
+        choco install make && make build-docker-images-windows-2019
+
+  buildWindows2022Docker:
+    name: Build Windows 2022 Docker Images
+    runs-on: windows-2022
+    steps:
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ env.DEFAULT_GO_VERSION }}
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Restore go mod cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+          ~/go/bin/
+        key: gocache
+
+    - name: Build Windows Docker Images
+      run: |
+        $env:ChocolateyInstall = Convert-Path "$((Get-Command choco).Path)\..\.."
+        Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+        refreshenv
+
+        choco install make && make build-docker-images-windows-2022
 
   e2e:
     name: E2E Tests

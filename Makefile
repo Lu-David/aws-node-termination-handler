@@ -4,7 +4,7 @@ LATEST_COMMIT_HASH=$(shell git rev-parse HEAD)
 LATEST_COMMIT_CHART_VERSION=$(shell git --no-pager show ${LATEST_COMMIT_HASH}:config/helm/aws-node-termination-handler/Chart.yaml | grep 'version:' | cut -d' ' -f2 | tr -d '[:space:]')
 PREVIOUS_RELEASE_TAG=$(shell git describe --abbrev=0 --tags `git rev-list --tags --skip=1  --max-count=1`)
 REPO_FULL_NAME=aws/aws-node-termination-handler
-ECR_REGISTRY ?= public.ecr.aws/aws-ec2
+ECR_REGISTRY ?= public.ecr.aws/p2b8v2q4#TODO: 851725162668.dkr.ecr.us-east-1.amazonaws.com # public.ecr.aws/aws-ec2
 ECR_REPO ?= ${ECR_REGISTRY}/aws-node-termination-handler
 ECR_REPO_CHART ?= aws-node-termination-handler
 IMG ?= amazon/aws-node-termination-handler
@@ -17,7 +17,16 @@ MAKEFILE_PATH = $(dir $(realpath -s $(firstword $(MAKEFILE_LIST))))
 BUILD_DIR_PATH = ${MAKEFILE_PATH}/build
 BIN_DIR = ${MAKEFILE_PATH}/bin
 SUPPORTED_PLATFORMS_LINUX ?= "linux/amd64,linux/arm64"
-SUPPORTED_PLATFORMS_WINDOWS ?= "windows/amd64"
+
+# Each windows version needs a separate make target because each build 
+# needs to happen on a separate GitHub runner
+# A windows version is specified by major-minor-build-revision. 
+# The build number of the OS must match the build number of the container image
+# The revision does not matter for windows 2019 and 2022.
+# Reference: https://learn.microsoft.com/en-us/virtualization/windowscontainers/deploy-containers/version-compatibility
+WINDOWS_2019 ?= "windows-10.0.17763.6189/amd64"
+WINDOWS_2022 ?= "windows-10.0.20348.2582/amd64"
+
 BINARY_NAME ?= "node-termination-handler"
 THIRD_PARTY_LICENSES = "${MAKEFILE_PATH}/THIRD_PARTY_LICENSES.md"
 GOLICENSES = $(BIN_DIR)/go-licenses
@@ -48,18 +57,32 @@ docker-run:
 build-docker-images:
 	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -r ${IMG} -v ${VERSION}
 
-build-docker-images-windows:
-	${MAKEFILE_PATH}/scripts/build-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${IMG} -v ${VERSION}
+build-docker-images-windows-2019:
+	${MAKEFILE_PATH}/scripts/build-docker-images -p ${WINDOWS_2019} -r ${IMG} -v ${VERSION}
+
+build-docker-images-windows-2022:
+	${MAKEFILE_PATH}/scripts/build-docker-images -p ${WINDOWS_2022} -r ${IMG} -v ${VERSION}
+
+ecr-public-login:
+	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/ecr-public-login
 
 push-docker-images:
 	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/ecr-public-login
 	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_LINUX} -r ${ECR_REPO} -v ${VERSION} -m
 
-push-docker-images-windows:
-	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+amazon-ecr-credential-helper:
 	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
-	${MAKEFILE_PATH}/scripts/push-docker-images -p ${SUPPORTED_PLATFORMS_WINDOWS} -r ${ECR_REPO} -v ${VERSION} -m
+
+push-docker-images-windows-2019:
+	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${WINDOWS_2019} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
+	${MAKEFILE_PATH}/scripts/push-docker-images -p ${WINDOWS_2019} -r ${ECR_REPO} -v ${VERSION} -m
+
+push-docker-images-windows-2022:
+	${MAKEFILE_PATH}/scripts/retag-docker-images -p ${WINDOWS_2022} -v ${VERSION} -o ${IMG} -n ${ECR_REPO}
+	bash ${MAKEFILE_PATH}/scripts/install-amazon-ecr-credential-helper $(AMAZON_ECR_CREDENTIAL_HELPER_VERSION)
+	${MAKEFILE_PATH}/scripts/push-docker-images -p ${WINDOWS_2022} -r ${ECR_REPO} -v ${VERSION} -m
 
 push-helm-chart:
 	@ECR_REGISTRY=${ECR_REGISTRY} ${MAKEFILE_PATH}/scripts/helm-login
@@ -122,8 +145,11 @@ helm-validate-chart-versions:
 build-binaries:
 	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_LINUX} -v ${VERSION}
 
-build-binaries-windows:
-	${MAKEFILE_PATH}/scripts/build-binaries -p ${SUPPORTED_PLATFORMS_WINDOWS} -v ${VERSION}
+build-binaries-windows-2019:
+	${MAKEFILE_PATH}/scripts/build-binaries -p ${WINDOWS_2019} -v ${VERSION}
+
+build-binaries-windows-2022:
+	${MAKEFILE_PATH}/scripts/build-binaries -p ${WINDOWS_2022} -v ${VERSION}
 
 upload-resources-to-github:
 	${MAKEFILE_PATH}/scripts/upload-resources-to-github
@@ -163,9 +189,11 @@ helm-tests: helm-version-sync-test helm-lint helm-validate-chart-versions
 eks-cluster-test:
 	${MAKEFILE_PATH}/test/eks-cluster-test/run-test
 
-release: build-binaries build-docker-images push-docker-images generate-k8s-yaml upload-resources-to-github
+release: build-binaries build-docker-images push-docker-images#TODO: generate-k8s-yaml upload-resources-to-github
 
-release-windows: build-binaries-windows build-docker-images-windows push-docker-images-windows
+release-windows-2019: build-binaries-windows-2019 build-docker-images-windows-2019 push-docker-images-windows-2019
+
+release-windows-2022: build-binaries-windows-2022 build-docker-images-windows-2022 push-docker-images-windows-2022
 
 test: spellcheck shellcheck unit-test e2e-test compatibility-test license-test go-linter helm-version-sync-test helm-lint
 
