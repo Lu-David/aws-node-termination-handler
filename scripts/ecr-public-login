@@ -16,4 +16,4 @@ function exit_and_fail() {
 
 trap exit_and_fail INT TERM ERR
 
-aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+docker login --username AWS --password="$(aws ecr-public get-login-password --region us-east-1)" "${ECR_REGISTRY}"
