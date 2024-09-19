@@ -7,7 +7,7 @@ toolchain go1.22.2
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/aws/aws-sdk-go v1.55.4
-	github.com/prometheus/client_golang v1.20.1
+	github.com/prometheus/client_golang v1.20.4
 	github.com/rs/zerolog v1.29.0
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.47.0
 	go.opentelemetry.io/otel v1.29.0
@@ -16,10 +16,10 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.29.0
 	go.uber.org/multierr v1.11.0
 	golang.org/x/sys v0.24.0
-	k8s.io/api v0.30.4
-	k8s.io/apimachinery v0.30.4
-	k8s.io/client-go v0.30.4
-	k8s.io/kubectl v0.30.4
+	k8s.io/api v0.31.1
+	k8s.io/apimachinery v0.31.1
+	k8s.io/client-go v0.31.1
+	k8s.io/kubectl v0.31.1
 )
 
 require (
