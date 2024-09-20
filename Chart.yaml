@@ -1,0 +1,8 @@
+apiVersion: v2
+description: aws-node-termination-handler-test
+name: aws-node-termination-handler
+version: 0.0.1     # unused, ignored
+dependencies:
+- name: aws-node-termination-handler
+  version: 0.22.0
+  repository: oci://public.ecr.aws/aws-ec2/helm/aws-node-termination-handler
