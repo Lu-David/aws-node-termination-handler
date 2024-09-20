@@ -55,9 +55,7 @@ for os_arch in "${PLATFORMS[@]}"; do
         os=$(echo $os | cut -d'-' -f1)
         img_tag="$IMAGE_REPO:$VERSION-$os-$windows_version-$arch"
         dockerfile="${dockerfile}.windows"
-        buildx_instance_name=$(docker buildx create --use)
-        docker buildx build \
-            --load \
+        docker build \
             --file "${dockerfile}" \
             --build-arg GOOS=${os} \
             --build-arg GOARCH=${arch} \
@@ -65,7 +63,6 @@ for os_arch in "${PLATFORMS[@]}"; do
             --build-arg GOPROXY=${GOPROXY} \
             --tag ${img_tag} \
             ${REPO_ROOT_PATH}
-        docker buildx rm ${buildx_instance_name}
     else
         # Launch a docker buildx instance and save its name so we can terminate it later
         img_tag="$IMAGE_REPO:$VERSION-$os-$arch"
