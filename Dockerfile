@@ -23,7 +23,7 @@ RUN make build
 ENTRYPOINT ["/node-termination-handler/build/node-termination-handler"]
 
 # Build the final image with only the binary
-FROM public.ecr.aws/amazonlinux/amazonlinux:2
+FROM public.ecr.aws/amazonlinux/amazonlinux:2 as amazonlinux
 FROM scratch
 WORKDIR /
 COPY --from=builder /node-termination-handler/build/node-termination-handler .
