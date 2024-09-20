@@ -8,6 +8,7 @@ ARG GO111MODULE="on"
 WORKDIR /node-termination-handler
 COPY go.mod .
 COPY go.sum .
+RUN go env
 RUN go mod download -x
 
 ARG CGO_ENABLED=0
