@@ -9,6 +9,7 @@ ARG CGO_ENABLED="0"
 ARG GOOS="windows" 
 ARG GOARCH="amd64"
 ARG GOPROXY="direct"
+ARG GOCACHE="off"
 
 # Copy go.mod and download dependencies
 WORKDIR /node-termination-handler
