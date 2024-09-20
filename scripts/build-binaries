@@ -8,8 +8,8 @@ MAKE_FILE_PATH=$REPO_ROOT_PATH/Makefile
 BIN_DIR=$SCRIPTPATH/../build/bin
 mkdir -p $BIN_DIR
 
-VERSION=$(make -s -f $MAKE_FILE_PATH version)
-BASE_BIN_NAME=$(make -s -f $MAKE_FILE_PATH binary-name)
+VERSION=$(make -s -f "$MAKE_FILE_PATH" version)
+BASE_BIN_NAME=$(make -s -f "$MAKE_FILE_PATH" binary-name)
 PLATFORMS=("linux/amd64")
 
 USAGE=$(cat << 'EOM'
@@ -55,24 +55,24 @@ for os_arch in "${PLATFORMS[@]}"; do
         bin_name="$BASE_BIN_NAME-$os-$arch"
     fi
 
-    docker container rm $container_name || :
-    $SCRIPTPATH/build-docker-images -p $os_arch -v $VERSION -r $repo_name
-    docker container create --rm --name $container_name "$repo_name:$VERSION-$os-$arch"
-    docker container cp $container_name:/${BASE_BIN_NAME} $BIN_DIR/$bin_name
+    docker container rm "$container_name" || :
+    "$SCRIPTPATH/build-docker-images" -p "$os_arch" -v "$VERSION" -r "$repo_name"
+    docker container create --rm --name "$container_name" "$repo_name:$VERSION-$os-$arch"
+    docker container cp "$container_name:/${BASE_BIN_NAME}" "$BIN_DIR/$bin_name"
 
     if [[ $os == "windows"* ]]; then
       ## Create zip archive with binary taking into account windows .exe
-      cp ${BIN_DIR}/${bin_name} ${BIN_DIR}/${BASE_BIN_NAME}.exe
+      cp "${BIN_DIR}/${bin_name}" "${BIN_DIR}/${BASE_BIN_NAME}.exe"
       ## Can't reuse bin_name below because it includes .exe
       curr_dir=$(pwd)
       cd "${BIN_DIR}"
-      zip -9 -q ${BASE_BIN_NAME}-$os-$arch.zip ${BASE_BIN_NAME}.exe
+      zip -9 -q "${BASE_BIN_NAME}-$os-$arch.zip" "${BASE_BIN_NAME}.exe"
       cd "${curr_dir}"
-      rm -f ${BIN_DIR}/${BASE_BIN_NAME}.exe
+      rm -f "${BIN_DIR}/${BASE_BIN_NAME}.exe"
     else
       ## Create tar.gz archive with binary
-      cp ${BIN_DIR}/${bin_name} ${BIN_DIR}/${BASE_BIN_NAME}
-      tar -zcvf ${BIN_DIR}/${bin_name}.tar.gz -C ${BIN_DIR} ${BASE_BIN_NAME}
-      rm -f ${BIN_DIR}/${BASE_BIN_NAME}
+      cp "${BIN_DIR}/${bin_name}" "${BIN_DIR}/${BASE_BIN_NAME}"
+      tar -zcvf "${BIN_DIR}/${bin_name}.tar.gz" -C "${BIN_DIR} ${BASE_BIN_NAME}"
+      rm -f "${BIN_DIR}/${BASE_BIN_NAME}"
     fi
 done

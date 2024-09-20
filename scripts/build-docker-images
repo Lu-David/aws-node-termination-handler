@@ -45,6 +45,7 @@ done
 
 
 for os_arch in "${PLATFORMS[@]}"; do
+    echo "os_arch: $os_arch"
     os=$(echo $os_arch | cut -d'/' -f1)
     arch=$(echo $os_arch | cut -d'/' -f2)
 
