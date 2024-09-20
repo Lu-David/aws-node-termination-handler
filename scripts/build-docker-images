@@ -9,7 +9,7 @@ DOCKERFILE_PATH=$REPO_ROOT_PATH/Dockerfile
 
 VERSION=$(make -s -f $MAKE_FILE_PATH version)
 PLATFORMS=("linux/amd64")
-GOPROXY="direct|https://proxy.golang.org"
+GOPROXY="direct"
 
 
 USAGE=$(cat << 'EOM'
