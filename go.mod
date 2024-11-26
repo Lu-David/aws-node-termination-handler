@@ -1,8 +1,6 @@
 module github.com/aws/aws-node-termination-handler
 
-go 1.22.0
-
-toolchain go1.22.2
+go 1.23.0
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.3
