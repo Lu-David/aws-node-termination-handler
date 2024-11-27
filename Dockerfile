@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.22 as builder
+FROM --platform=$BUILDPLATFORM golang:1.23 AS builder
 
 ## GOLANG env
 ARG GOPROXY="https://proxy.golang.org|direct"
@@ -23,7 +23,7 @@ RUN make build
 ENTRYPOINT ["/node-termination-handler/build/node-termination-handler"]
 
 # Build the final image with only the binary
-FROM amazonlinux:2 as amazonlinux
+FROM amazonlinux:2 AS amazonlinux
 FROM scratch
 WORKDIR /
 COPY --from=builder /node-termination-handler/build/node-termination-handler .
