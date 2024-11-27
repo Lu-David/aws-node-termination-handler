@@ -3,11 +3,24 @@ ARG WINDOWS_VERSION=1809
 # Build the manager binary
 FROM --platform=windows/amd64 golang:1.23 as builder
 
+## GOLANG env
+RUN echo $GO111MODULE
+RUN echo $CGO_ENABLED
+RUN echo $GOOS
+RUN echo $GOARCH
+ENV GO111MODULE="on" CGO_ENABLED="0" GOOS="windows" GOARCH="amd64"
+ARG GOPROXY="https://proxy.golang.org|direct"
+
 # Copy go.mod and download dependencies
 WORKDIR /node-termination-handler
 COPY go.mod .
 COPY go.sum .
 RUN go mod download -x
+
+RUN echo $GO111MODULE
+RUN echo $CGO_ENABLED
+RUN echo $GOOS
+RUN echo $GOARCH
 
 # Build
 COPY . .
@@ -24,4 +37,3 @@ COPY --from=builder /windows/system32/netapi32.dll /windows/system32/
 COPY --from=builder /node-termination-handler/build/node-termination-handler .
 COPY THIRD_PARTY_LICENSES.md .
 ENTRYPOINT ["/node-termination-handler"]
-
