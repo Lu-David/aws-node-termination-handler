@@ -1,14 +1,14 @@
-FROM --platform=$BUILDPLATFORM golang:1.23 as builder
+FROM --platform=$BUILDPLATFORM golang:1.22 as builder
 
 ## GOLANG env
-ARG GOPROXY="off"
+ARG GOPROXY="https://proxy.golang.org|direct"
 ARG GO111MODULE="on"
 
 # Copy go.mod and download dependencies
 WORKDIR /node-termination-handler
 COPY go.mod .
 COPY go.sum .
-RUN go mod download -x
+RUN go mod download
 
 ARG CGO_ENABLED=0
 ARG TARGETOS TARGETARCH
