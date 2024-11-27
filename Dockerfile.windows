@@ -4,10 +4,7 @@ ARG WINDOWS_VERSION=1809
 FROM --platform=windows/amd64 golang:1.23 as builder
 
 ## GOLANG env
-ENV GO111MODULE="on" CGO_ENABLED="0"
-ARG GOPROXY="https://proxy.golang.org|direct"
-
-RUN env
+ENV GO111MODULE="on" CGO_ENABLED="0" GOOS="windows" GOARCH="amd64"
 
 # Copy go.mod and download dependencies
 WORKDIR /node-termination-handler
