@@ -10,17 +10,16 @@ RUN echo $GOOS
 RUN echo $GOARCH
 ENV GO111MODULE="on" CGO_ENABLED="0" GOOS="windows" GOARCH="amd64"
 ARG GOPROXY="https://proxy.golang.org|direct"
+RUN echo $GO111MODULE
+RUN echo $CGO_ENABLED
+RUN echo $GOOS
+RUN echo $GOARCH
 
 # Copy go.mod and download dependencies
 WORKDIR /node-termination-handler
 COPY go.mod .
 COPY go.sum .
 RUN go mod download -x
-
-RUN echo $GO111MODULE
-RUN echo $CGO_ENABLED
-RUN echo $GOOS
-RUN echo $GOARCH
 
 # Build
 COPY . .
