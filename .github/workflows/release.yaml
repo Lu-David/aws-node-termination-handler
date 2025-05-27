@@ -90,11 +90,5 @@ jobs:
         role-session-name: a_session
         aws-region: us-east-1
     
-    - name: Sync Helm Chart Catalog information
-      run: make sync-catalog-information-for-helm-chart
-    
-    - name: Sync Helm Chart to ECR Public
-      run: make push-helm-chart
-    
     - name: Sync Readme to ECR Public
       run: make sync-readme-to-ecr-public
