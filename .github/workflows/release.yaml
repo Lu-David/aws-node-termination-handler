@@ -29,10 +29,10 @@ jobs:
 
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v1.7.0
-          with:
-            role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-            role-session-name: a_session
-            aws-region: us-east-1
+      with:
+        role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+        role-session-name: a_session
+        aws-region: us-east-1
 
     - name: Release Linux Assets
       run: make release
@@ -55,10 +55,10 @@ jobs:
 
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v1.7.0
-          with:
-            role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-            role-session-name: a_session
-            aws-region: us-east-1
+      with:
+        role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+        role-session-name: a_session
+        aws-region: us-east-1
 
     - name: Release Windows Assets
       run: |
@@ -83,10 +83,10 @@ jobs:
 
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v1.7.0
-          with:
-            role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-            role-session-name: a_session
-            aws-region: us-east-1
+      with:
+        role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+        role-session-name: a_session
+        aws-region: us-east-1
     
     - name: Sync Helm Chart Catalog information
       run: make sync-catalog-information-for-helm-chart
